@@ -1,0 +1,39 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use EV;
+ 
+use IO::Socket::INET;
+use XML::Simple ':strict';
+use Data::Dumper;
+ 
+my ($socket,$data);
+my $datagram;
+my $datagram_count=0;
+ 
+sub getpacket {
+    $datagram_count++;
+    my $flags;
+    $socket->recv($datagram,1500,$flags);
+    print "packet number $datagram_count, ", length($datagram),
+          " bytes from ", $socket->peerhost,
+          ", flags ", $flags ? "$flags:\n" : "none:\n",
+          $datagram;
+    print "\n\n";
+
+    my $hfauto = XMLin($datagram, KeyAttr => 'HFAUTO', ForceArray => 0);
+    print Dumper $hfauto;
+}
+
+#  Create a new UDP socket
+$socket = new IO::Socket::INET (
+    LocalPort => 15080,
+    Proto        => 'udp'
+) or die "ERROR creating socket : $!n";
+
+my $udp_watcher = EV::io $socket, EV::READ, &getpacket;
+$udp_watcher->keepalive (0);
+ 
+ 
+$socket->close();
