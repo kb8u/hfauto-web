@@ -1,5 +1,7 @@
 package HFautoWeb;
 use Mojo::Base 'Mojolicious';
+use AnyEvent::Socket;
+use AnyEvent::Handle::UDP;
 
 # This method will run once at server start
 sub startup {
