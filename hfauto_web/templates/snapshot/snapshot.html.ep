@@ -1,0 +1,4 @@
+% layout 'default';
+% title 'HFauto';
+<h2><%= $msg %></h2>
+json: <%= $hfa_json %>

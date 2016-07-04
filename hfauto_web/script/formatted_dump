@@ -1,0 +1,45 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use feature 'say';
+use AnyEvent::Strict;
+use AnyEvent::Socket;
+use AnyEvent::Handle::UDP;
+ 
+use IO::Socket::INET;
+use XML::Simple ':strict';
+use Data::Dumper;
+ 
+my ($socket,$data);
+my $datagram;
+my $datagram_count=0;
+
+my $udp_ready = AnyEvent->condvar;
+ 
+my $hfauto_rx = AnyEvent::Handle::UDP->new(
+    bind => ['10.34.34.34', 15080],
+    on_recv => sub {
+        my ($datagram, $ae_handle, $sock_addr) = @_;
+        my ($service, $host) = AnyEvent::Socket::unpack_sockaddr($sock_addr);
+        $datagram_count++;
+        say "packet number $datagram_count, ", length($datagram),
+            " bytes from ", format_address($host);
+        my $hfauto = XMLin($datagram, KeyAttr => 'HFAUTO', ForceArray => 0);
+        say 'ATU_IND             ',$hfauto->{ATU_IND};
+        say 'ATU_CAP             ',$hfauto->{ATU_CAP};
+        say 'ATU_SWR             ',$hfauto->{ATU_SWR};
+        say 'ATU_PWR             ',$hfauto->{ATU_PWR};
+        say 'ATU_PWR_PEAK        ',$hfauto->{ATU_PWR_PEAK};
+        say 'ATU_PWR_MAX         ',$hfauto->{ATU_PWR_MAX};
+        say 'ATU_FREQ            ',$hfauto->{ATU_FREQ};
+        say 'ATU_BAND            ',$hfauto->{ATU_BAND};
+        say 'ATU_ANT_NR          ',$hfauto->{ATU_ANT_NR};
+        say 'ATU_ANT_SEL_METHOD  ',$hfauto->{ATU_ANT_SEL_METHOD};
+        say 'ATU_ANT_NAME        ',$hfauto->{ATU_ANT_NAME};
+        say 'ATU_OPER_MODE       ',$hfauto->{ATU_OPER_MODE};
+        say 'CAT_SRC             ',$hfauto->{CAT_SRC};
+        say 'CAT_SRC             ',$hfauto->{CAT_FREQ};
+    });
+
+$udp_ready->recv;

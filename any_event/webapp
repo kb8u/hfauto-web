@@ -16,8 +16,7 @@ my ($socket,$data);
 my $datagram;
 my $datagram_count=0;
 
-my $udp_ready = AnyEvent->condvar;
-my $info;
+my $hfa_json;
  
 my $hfauto_rx = AnyEvent::Handle::UDP->new(
     bind => ['10.34.34.34', 15080],
@@ -25,22 +24,44 @@ my $hfauto_rx = AnyEvent::Handle::UDP->new(
         my ($datagram, $ae_handle, $sock_addr) = @_;
         my ($service, $host) = AnyEvent::Socket::unpack_sockaddr($sock_addr);
         $datagram_count++;
-        $info = "packet number $datagram_count, ". length($datagram).
-              " bytes from ". format_address($host)."\n".
-              $datagram . "\n\n";
+#        $hfa_json = "packet number $datagram_count, ". length($datagram).
+#              " bytes from ". format_address($host)."\n".
+#              $datagram . "\n\n";
 
-        $info = encode_json(XMLin(
+        $hfa_json = encode_json(XMLin(
                   $datagram, KeyAttr => 'HFAUTO', ForceArray => 0));
     });
 
-my $httpd = AnyEvent::HTTPD->new (port => 8080);
 
+my $ws_server = AnyEvent::WebSocket::Server->new();
+my $tcp_ws_server;
+$tcp_ws_server = tcp_server('10.34.34.34', 8081, sub {
+    my ($fh) = @_;
+    $ws_server->establish($fh)->cb(sub {
+        my $connection = eval { shift->recv };
+        if($@) {
+            warn "Invalid connection request: $@\n";
+            close($fh);
+            return;
+        }
+        $connection->on(each_message => sub {
+            my ($connection, $message) = @_;
+            $connection->send($hfa_json);
+        });
+        $connection->on(finish => sub {
+            undef $connection;
+        });
+    });
+});
+
+
+my $httpd = AnyEvent::HTTPD->new (port => 8080);
 $httpd->reg_cb (
    '/' => sub {
                  my ($httpd, $req) = @_;
                  my $html = <<"EOHTML";
 <html><body><h1>hf-auto packet</h1>
-$info
+$hfa_json
 </body></html>
 EOHTML
                  $req->respond ({ content => ['text/html', $html ] });
@@ -120,7 +141,4 @@ EOHTML
 );
 
 
-
-
-$udp_ready->recv;
 $httpd->run;

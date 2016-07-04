@@ -5,8 +5,9 @@ use Mojo::Base 'Mojolicious::Controller';
 sub welcome {
   my $self = shift;
 
+  $self->stash('hfa_json' => $self->app->{'hfa_json'});
   # Render template "example/welcome.html.ep" with message
-  $self->render(msg => 'Welcome to the Mojolicious real-time web framework!');
+  $self->render(msg => 'snap shot of json from hfauto');
 }
 
 1;
