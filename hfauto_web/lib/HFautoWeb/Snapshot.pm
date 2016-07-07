@@ -6,7 +6,6 @@ sub snapshot {
   my $self = shift;
 
   $self->stash('hfa_json' => $self->app->{'hfa_json'});
-  # Render template "example/welcome.html.ep" with message
   $self->render(msg => 'Snap shot of hfauto');
 }
 
@@ -16,7 +15,9 @@ sub stream {
 
   $self->on(message => sub {
     my ($self) = @_;
-    $self->send($self->app->{'hfa_json'});
+    if ($self->app->{'hfa_json_changed'}) {
+      $self->send($self->app->{'hfa_json'});
+    }
   });
 }
 
