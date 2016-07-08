@@ -2,11 +2,11 @@ package HFautoWeb;
 use EV;
 use AnyEvent;
 use Mojo::Base 'Mojolicious';
+use Mojolicious::Plugin::Util::RandomString;
 use AnyEvent::Socket;
 use AnyEvent::Handle::UDP;
 use XML::Simple ':strict';
 use JSON::XS;
-use Test::JSON;
 
 
 # This method will run once at server start
@@ -19,16 +19,13 @@ sub startup {
         my ($datagram, $ae_handle, $sock_addr) = @_;
         my ($service, $host) = AnyEvent::Socket::unpack_sockaddr($sock_addr);
 
-        my $last = $self->{'hfa_json'};
         $self->{'hfa_json'} = encode_json(XMLin(
                   $datagram, KeyAttr => 'HFAUTO', ForceArray => 0));
-        $self->{'hfa_json_changed'}
-          = is_json($last, $self->{'hfa_json'}) ? 0 : 1;
     });
-
 
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer');
+  $self->plugin('Util::RandomString');
 
   # Router
   my $r = $self->routes;

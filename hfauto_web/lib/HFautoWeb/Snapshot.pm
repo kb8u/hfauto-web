@@ -1,5 +1,7 @@
 package HFautoWeb::Snapshot;
 use Mojo::Base 'Mojolicious::Controller';
+use JSON::XS;
+use Data::Compare;
 
 # This action will render a template
 sub snapshot {
@@ -15,8 +17,16 @@ sub stream {
 
   $self->on(message => sub {
     my ($self) = @_;
-    if ($self->app->{'hfa_json_changed'}) {
+    unless (exists $self->app->{'last_hfa_json'}->{$self->session('hfa_client')}) {
       $self->send($self->app->{'hfa_json'});
+      $self->app->{'last_hfa_json'}->{$self->session('hfa_client')} =
+          $self->app->{'hfa_json'};
+      return;
+    }
+    unless (Compare(decode_json($self->app->{'hfa_json'}),
+                    decode_json($self->app->{'last_hfa_json'}->{$self->session('hfa_client')}))) {
+        $self->send($self->app->{'hfa_json'});
+        $self->app->{'last_hfa_json'}->{$self->session('hfa_client')} = $self->app->{'hfa_json'};
     }
   });
 }
@@ -25,6 +35,7 @@ sub stream {
 sub prep {
   my $self = shift;
 
+  $self->session( hfa_client => $self->random_string );
   $self->render();
 }
 
