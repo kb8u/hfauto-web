@@ -17,12 +17,16 @@ sub stream {
 
   $self->on(message => sub {
     my ($self) = @_;
+
+    # send json if there's a new client (no cookie)
     unless (exists $self->app->{'last_hfa_json'}->{$self->session('hfa_client')}) {
       $self->send($self->app->{'hfa_json'});
       $self->app->{'last_hfa_json'}->{$self->session('hfa_client')} =
           $self->app->{'hfa_json'};
       return;
     }
+
+    # send new json if it's different than the last json sent
     unless (Compare(decode_json($self->app->{'hfa_json'}),
                     decode_json($self->app->{'last_hfa_json'}->{$self->session('hfa_client')}))) {
         $self->send($self->app->{'hfa_json'});
