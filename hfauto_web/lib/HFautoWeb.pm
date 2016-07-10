@@ -13,16 +13,6 @@ use JSON::XS;
 sub startup {
   my $self = shift;
 
-  my $hfauto_rx = AnyEvent::Handle::UDP->new(
-    bind => ['10.34.34.34', 15080],
-    on_recv => sub {
-        my ($datagram, $ae_handle, $sock_addr) = @_;
-        my ($service, $host) = AnyEvent::Socket::unpack_sockaddr($sock_addr);
-
-        $self->{'hfa_json'} = encode_json(XMLin(
-                  $datagram, KeyAttr => 'HFAUTO', ForceArray => 0));
-    });
-
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer');
   $self->plugin('Util::RandomString');

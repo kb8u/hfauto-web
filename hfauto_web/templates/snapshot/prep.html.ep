@@ -24,13 +24,14 @@
   function onOpen(evt)
   {
     writeToScreen("CONNECTED");
-    setInterval(doSend, 500,'moredata');
+//    setInterval(doSend, 500,'moredata');
 //    doSend("1st data");
   }
 
   function onClose(evt)
   {
     writeToScreen("DISCONNECTED");
+    window.scrollTo(0,document.body.scrollHeight);
   }
 
   function onMessage(evt)
