@@ -1,4 +1,4 @@
-package HFautoWeb::Snapshot;
+package HFautoWeb::Dataview;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojolicious::Plugin::Util::RandomString;
 use AnyEvent;
@@ -7,14 +7,6 @@ use AnyEvent::Handle::UDP;
 use JSON::XS;
 use XML::Simple ':strict';
 use Data::Compare;
-
-# This action will render a template
-sub snapshot {
-  my $self = shift;
-
-  $self->stash('hfa_json' => $self->app->{'hfa_json'});
-  $self->render(msg => 'Snap shot of hfauto');
-}
 
 
 sub stream {
@@ -49,7 +41,7 @@ sub stream {
 }
 
 
-sub prep {
+sub prep_debug {
   my $self = shift;
 
   $self->session( hfa_client => $self->random_string );

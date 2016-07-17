@@ -13,20 +13,15 @@ use JSON::XS;
 sub startup {
   my $self = shift;
 
-  # Documentation browser under "/perldoc"
-  $self->plugin('PODRenderer');
   $self->plugin('Util::RandomString');
 
   # Router
   my $r = $self->routes;
 
-  # Normal route to controller
-  $r->get('/')->to('example#welcome');
-
-  # snapshot of json for debugging purposes
-  $r->get('/snapshot')->to(controller => 'snapshot', action => 'snapshot');
-  $r->get('prep')->to(controller =>'snapshot', action =>'prep');
-  $r->websocket('json_stream')->to(controller =>'snapshot', action =>'stream');
+  # prep_debug is the main page, it get json_stream for data to display
+  # shows json data as it arrives, no efforts to keep alive websocket
+  $r->get('prep_debug')->to(controller =>'dataview', action =>'prep_debug');
+  $r->websocket('json_stream')->to(controller =>'dataview', action =>'stream');
 }
 
 1;
