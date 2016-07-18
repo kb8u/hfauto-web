@@ -14,6 +14,7 @@ use JSON::XS;
 sub startup {
   my $self = shift;
 
+  $self->secrets(['Hte83oKX93OR@#ozM#be3%08hcA-j232']);
   $self->plugin('Util::RandomString');
   $self->plugin('Config');
 

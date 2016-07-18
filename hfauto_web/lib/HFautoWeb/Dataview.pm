@@ -37,6 +37,7 @@ sub stream {
         }
     });
 
+  $self->on(message => sub { $self->send('keep-alive') });
   $self->on(finish => sub { $hfauto_rx->destroy });
 }
 
