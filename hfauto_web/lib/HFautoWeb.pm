@@ -3,6 +3,7 @@ use EV;
 use AnyEvent;
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Util::RandomString;
+use Mojolicious::Plugin::Config;
 use AnyEvent::Socket;
 use AnyEvent::Handle::UDP;
 use XML::Simple ':strict';
@@ -14,6 +15,7 @@ sub startup {
   my $self = shift;
 
   $self->plugin('Util::RandomString');
+  $self->plugin('Config');
 
   # Router
   my $r = $self->routes;
@@ -21,6 +23,11 @@ sub startup {
   # prep_debug is the main page, it get json_stream for data to display
   # shows json data as it arrives, no efforts to keep alive websocket
   $r->get('prep_debug')->to(controller =>'dataview', action =>'prep_debug');
+
+  # graphical display of xml data from hfauto
+  $r->get('hfauto')->to(controller =>'dataview', action =>'display');
+
+  # encode xmlinto json
   $r->websocket('json_stream')->to(controller =>'dataview', action =>'stream');
 }
 

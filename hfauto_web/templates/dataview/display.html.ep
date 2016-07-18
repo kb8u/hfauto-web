@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Palstor HF-Auto</title>
+  <script>
+    var wsUri = '<%= $wsUri %>';
+  </script>
+  <script src="hfauto.js"></script>
+</head>
+<body>
+
+  <h2>WebSocket Test</h2>
+
+  <div id="output"></div>
+
+</body>
+</html>

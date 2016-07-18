@@ -13,7 +13,7 @@ sub stream {
   my $self = shift;
 
   my $hfauto_rx = AnyEvent::Handle::UDP->new(
-    bind => ['10.34.34.34', 15080],
+    bind => [$self->app->config->{w1tr_ip}, $self->app->config->{w1tr_port}],
     on_recv => sub {
         my ($datagram, $ae_handle, $sock_addr) = @_;
         my ($service, $host) = AnyEvent::Socket::unpack_sockaddr($sock_addr);
@@ -45,8 +45,17 @@ sub prep_debug {
   my $self = shift;
 
   $self->session( hfa_client => $self->random_string );
+  $self->stash( wsUri => $self->app->config->{wsUri} );
   $self->render();
 }
 
+
+sub display {
+  my $self = shift;
+
+  $self->session( hfa_client => $self->random_string );
+  $self->stash( wsUri => $self->app->config->{wsUri} );
+  $self->render();
+}
 
 1;
