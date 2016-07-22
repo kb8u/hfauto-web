@@ -24,7 +24,7 @@
   function onOpen(evt)
   {
     writeToScreen("CONNECTED");
-    setInterval(doSend, 500,'moredata');
+    setInterval(doSend, 9000,'moredata');
 //    doSend("1st data");
   }
 
@@ -36,6 +36,7 @@
 
   function onMessage(evt)
   {
+    if (evt.data === 'keep-alive') { return; }
     writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
     window.scrollTo(0,document.body.scrollHeight);
   }
@@ -48,7 +49,7 @@
   function doSend(message)
   {
     if (websocket.readyState) {
-      writeToScreen("SENT: " + message);
+//      writeToScreen("SENT: " + message);
       websocket.send(message);
     }
   }
