@@ -12,33 +12,34 @@ use Data::Compare;
 sub stream {
   my $self = shift;
 
+  my $sa = $self->app;
+  my $id = sprintf "%s", $self->tx;
+  $sa->{'clients'}->{$id} = $self->tx;
+
   my $hfauto_rx = AnyEvent::Handle::UDP->new(
-    bind => [$self->app->config->{w1tr_ip}, $self->app->config->{w1tr_port}],
+    bind => [$sa->config->{w1tr_ip}, $sa->config->{w1tr_port}],
     on_recv => sub {
         my ($datagram, $ae_handle, $sock_addr) = @_;
-        my ($service, $host) = AnyEvent::Socket::unpack_sockaddr($sock_addr);
-
-        $self->app->{'hfa_json'} = encode_json(XMLin(
+        $sa->{'hfa_json'} = encode_json(XMLin(
                   $datagram, KeyAttr => 'HFAUTO', ForceArray => 0));
 
-        # send json if there's a new client (no cookie)
-        unless (exists $self->app->{'last_hfa_json'}->{$self->session('hfa_client')}) {
-          $self->send($self->app->{'hfa_json'});
-          $self->app->{'last_hfa_json'}->{$self->session('hfa_client')} =
-            $self->app->{'hfa_json'};
-          return;
+        # initialize last_hfa_json for new client
+        unless (exists $sa->{'last_hfa_json'}->{$id}) {
+          $sa->{'last_hfa_json'}->{$id} = encode_json({a => 0});
         }
 
-        # send new json if it's different than the last json sent
-        unless (Compare(decode_json($self->app->{'hfa_json'}),
-                        decode_json($self->app->{'last_hfa_json'}->{$self->session('hfa_client')}))) {
-          $self->send($self->app->{'hfa_json'});
-          $self->app->{'last_hfa_json'}->{$self->session('hfa_client')} = $self->app->{'hfa_json'};
+        # send if json is different than the last json sent for each client
+        for my $id (keys %{$sa->{'clients'}}) {
+            unless (Compare(decode_json($sa->{'hfa_json'}),
+                            decode_json($sa->{'last_hfa_json'}->{$id}))) {
+                $sa->{'clients'}->{$id}->send($sa->{'hfa_json'});
+                $sa->{'last_hfa_json'}->{$id} = $sa->{'hfa_json'};
+            }
         }
     });
 
   $self->on(message => sub { $self->send('keep-alive') });
-  $self->on(finish => sub { $hfauto_rx->destroy });
+  $self->on(finish => sub { delete $sa->{'clients'}->{$id} });
 }
 
 
