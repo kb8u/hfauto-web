@@ -1,86 +1,59 @@
-var output;
 var websocket = new WebSocket(wsUri);
 
-function init()
-{
-  output = document.getElementById("output");
-  testWebSocket();
-}
+setInterval(function() { websocket.send('ping'); }, 9000);
 
-function testWebSocket()
-{
-  websocket.onopen = function(evt) { onOpen(evt) };
-  websocket.onclose = function(evt) { onClose(evt) };
-  websocket.onmessage = function(evt) { onMessage(evt) };
-  websocket.onerror = function(evt) { onError(evt) };
-}
-
-function onOpen(evt)
-{
-  writeToScreen("CONNECTED");
-  setInterval(doSend, 10000,'keep-alive');
-//    doSend("1st data");
-}
-
-function onClose(evt)
-{
-  writeToScreen("DISCONNECTED");
-}
-
-function onMessage(evt)
-{
-  if (evt.data === 'keep-alive') {
-    return;
-  }
-  hfauto = JSON.parse(evt.data);
-  ldata.setValue(hfauto['ATU_IND']);
-  chart.draw(data, options);
-//  writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-//  writeToScreen('<span style="color: green;">ATU_IND: ' + hfauto['ATU_IND'] +'</span>');
-//  window.scrollTo(0,document.body.scrollHeight);
-}
-
-function onError(evt)
-{
-  writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-}
-
-function doSend(message)
-{
-  if (websocket.readyState) {
-    writeToScreen("SENT: " + message);
-    websocket.send(message);
-  }
-}
-
-function writeToScreen(message)
-{
-  var pre = document.createElement("p");
-  pre.style.wordWrap = "break-word";
-  pre.innerHTML = message;
-  output.appendChild(pre);
-}
-
-window.addEventListener("load", init, false);
-
-//  from https://developers.google.com/chart/interactive/docs/gallery/gauge
 google.charts.load('current', {'packages':['gauge']});
 google.charts.setOnLoadCallback(drawChart);
+
+
 function drawChart() {
-
-  var ldata = google.visualization.arrayToDataTable([
+  var SWRdata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
-    ['Inductance', hfauto['ATU_IND']],
+    ['SWR', 10],
   ]);
-
-  var loptions = {
+  var SWRoptions = {
     width: 400, height: 120,
-    max, 255,
+    min: 1, max: 3,
+    minorTicks: 6,
+    greenFrom: 1, greenTo: 1.5,
+    yellowFrom: 1.5, yellowTo: 2,
+    redFrom: 2, redTo: 6
+  };
+  var SWRchart = new google.visualization.Gauge(document.getElementById('SWR'));
+  SWRchart.draw(SWRdata, SWRoptions);
+
+  var Ldata = google.visualization.arrayToDataTable([
+    ['Label', 'Value'],
+    ['Inductance', 137]
+  ]);
+  var Loptions = {
+    width: 400, height: 120,
+    min: 137, max: 576,
     minorTicks: 5
   };
+  var Lchart = new google.visualization.Gauge(document.getElementById('L'));
+  Lchart.draw(Ldata, Loptions);
 
-  var chart = new google.visualization.Gauge(document.getElementById('output'));
+  var Cdata = google.visualization.arrayToDataTable([
+    ['Label', 'Value'],
+    ['Capacitance', 54],
+  ]);
+  var Coptions = {
+    width: 400, height: 120,
+    min: 54, max: 203,
+    minorTicks: 5
+  };
+  var Cchart = new google.visualization.Gauge(document.getElementById('C'));
+  Cchart.draw(Cdata, Coptions);
 
-  chart.draw(ldata, loptions);
+  websocket.onmessage = function(evt) {
+    var j = JSON.parse(evt.data);
+    SWRdata.setValue(0, 1, j['ATU_SWR']);
+    SWRchart.draw(SWRdata,SWRoptions);
+    Ldata.setValue(0, 1, j['ATU_IND']);
+    Lchart.draw(Ldata,Loptions);
+    Cdata.setValue(0, 1, j['ATU_CAP']);
+    Cchart.draw(Cdata,Coptions);
+  };
 }
 

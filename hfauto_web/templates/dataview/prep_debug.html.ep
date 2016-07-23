@@ -3,7 +3,7 @@
   <title>WebSocket Test</title>
   <script language="javascript" type="text/javascript">
 
-  var wsUri = "ws://10.34.34.34:3000/json_stream";
+  var wsUri = "<%= $wsUri %>";
   var output;
   var websocket = new WebSocket(wsUri);
 

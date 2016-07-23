@@ -10,10 +10,8 @@
   <script src="hfauto.js"></script>
 </head>
 <body>
-
-  <h2>WebSocket Test</h2>
-
-  <div id="output"></div>
-
+  <div id="L"></div>
+  <div id="C"></div>
+  <div id="SWR"></div>
 </body>
 </html>

@@ -15,6 +15,7 @@ sub stream {
   my $sa = $self->app;
   my $id = sprintf "%s", $self->tx;
   $sa->{'clients'}->{$id} = $self->tx;
+  $self->app->log->debug("New websocket client $id");
 
   my $hfauto_rx = AnyEvent::Handle::UDP->new(
     bind => [$sa->config->{w1tr_ip}, $sa->config->{w1tr_port}],
@@ -46,7 +47,6 @@ sub stream {
 sub prep_debug {
   my $self = shift;
 
-  $self->session( hfa_client => $self->random_string );
   $self->stash( wsUri => $self->app->config->{wsUri} );
   $self->render();
 }
@@ -55,7 +55,6 @@ sub prep_debug {
 sub display {
   my $self = shift;
 
-  $self->session( hfa_client => $self->random_string );
   $self->stash( wsUri => $self->app->config->{wsUri} );
   $self->render();
 }

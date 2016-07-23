@@ -4,6 +4,7 @@ use AnyEvent;
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::Util::RandomString;
 use Mojolicious::Plugin::Config;
+use Mojo::Log;
 use AnyEvent::Socket;
 use AnyEvent::Handle::UDP;
 use XML::Simple ':strict';
