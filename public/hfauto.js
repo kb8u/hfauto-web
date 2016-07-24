@@ -47,6 +47,7 @@ function drawChart() {
   Cchart.draw(Cdata, Coptions);
 
   websocket.onmessage = function(evt) {
+    if (evt.data === 'keep-alive') { return; }
     var j = JSON.parse(evt.data);
     SWRdata.setValue(0, 1, j['ATU_SWR']);
     SWRchart.draw(SWRdata,SWRoptions);
