@@ -1,8 +1,4 @@
-var websocket = new WebSocket(wsUri);
-
-setInterval(function() { websocket.send('ping'); }, 9000);
-
-google.charts.load('current', {'packages':['gauge']});
+google.charts.load('current', {'packages':['corechart','gauge']});
 google.charts.setOnLoadCallback(drawChart);
 
 
@@ -20,7 +16,6 @@ function drawChart() {
     redFrom: 2, redTo: 6
   };
   var SWRchart = new google.visualization.Gauge(document.getElementById('SWR'));
-  SWRchart.draw(SWRdata, SWRoptions);
 
   var Ldata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
@@ -32,7 +27,6 @@ function drawChart() {
     minorTicks: 5
   };
   var Lchart = new google.visualization.Gauge(document.getElementById('L'));
-  Lchart.draw(Ldata, Loptions);
 
   var Cdata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
@@ -44,10 +38,24 @@ function drawChart() {
     minorTicks: 5
   };
   var Cchart = new google.visualization.Gauge(document.getElementById('C'));
-  Cchart.draw(Cdata, Coptions);
+
+  var websocket = new WebSocket(wsUri);
+
+  setInterval(function() { websocket.send('ping'); }, 9000);
+
+  websocket.onload = function(evt) {
+    var j = JSON.parse(evt.data);
+    SWRdata.setValue(0, 1, j['ATU_SWR']);
+    SWRchart.draw(SWRdata,SWRoptions);
+    Ldata.setValue(0, 1, j['ATU_IND']);
+    Lchart.draw(Ldata,Loptions);
+    Cdata.setValue(0, 1, j['ATU_CAP']);
+    Cchart.draw(Cdata,Coptions);
+  };
 
   websocket.onmessage = function(evt) {
     if (evt.data === 'keep-alive') { return; }
+
     var j = JSON.parse(evt.data);
     SWRdata.setValue(0, 1, j['ATU_SWR']);
     SWRchart.draw(SWRdata,SWRoptions);
