@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <title>Palstar HF-Auto</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script>
     var wsUri = '<%= $wsUri %>';
@@ -10,9 +13,23 @@
   <script src="hfauto.js"></script>
 </head>
 <body>
-  <div id="L"></div>
-  <div id="C"></div>
-  <div id="SWR"></div>
-  <div id="Power"></div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="well well-sm">
+          <div class="col-sm-4" id="SWR"></div>
+          <div class="col-sm-4" id="L"></div>
+          <div class="col-sm-4" id="C"></div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="well well-sm">
+          <div class="col-sm-4" id="Power"></div>
+          <div class="col-sm-4" id="PeakPower"></div>
+          <div class="col-sm-4" id="PowerRange"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

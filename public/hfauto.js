@@ -57,6 +57,19 @@ function drawChart() {
   };
   var Powerchart = new google.visualization.Gauge(document.getElementById('Power'));
 
+  var PeakPowerdata = google.visualization.arrayToDataTable([
+    ['Label', 'Value'],
+    ['Power', 0],
+  ]);
+  var PeakPoweroptions = {
+    width: dialWidth, height: dialHeight,
+    min: 0, max: maxPower,
+    minorTicks: 3,
+    majorTicks: powerTicks,
+    yellowFrom: 1500, yellowTo: 1800
+  };
+  var PeakPowerchart = new google.visualization.Gauge(document.getElementById('PeakPower'));
+
   var websocket = new WebSocket(wsUri);
 
   setInterval(function() { websocket.send('ping'); }, 9000);
@@ -71,6 +84,8 @@ function drawChart() {
     Cchart.draw(Cdata,Coptions);
     Powerdata.setValue(0, 1, j['ATU_PWR']);
     Powerchart.draw(Powerdata,Poweroptions);
+    PeakPowerdata.setValue(0, 1, j['ATU_PWR_PEAK']);
+    PeakPowerchart.draw(PeakPowerdata,PeakPoweroptions);
   };
 
   websocket.onmessage = function(evt) {
@@ -80,6 +95,6 @@ function drawChart() {
 
   websocket.onload = function(evt) {
     updateDials(evt);
-  }
+  };
 }
 
