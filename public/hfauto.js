@@ -1,6 +1,10 @@
-google.charts.load('current', {'packages':['corechart','gauge']});
+google.charts.load('current', {'packages':['gauge']});
 google.charts.setOnLoadCallback(drawChart);
 
+var maxPower = 1800;
+var powerTicks = ['0','300','600','900','1200','1500','1800'];
+var dialWidth = 400;
+var dialHeight = 120;
 
 function drawChart() {
   var SWRdata = google.visualization.arrayToDataTable([
@@ -8,9 +12,10 @@ function drawChart() {
     ['SWR', 10],
   ]);
   var SWRoptions = {
-    width: 400, height: 120,
+    width: dialWidth, height: dialHeight,
     min: 1, max: 3,
-    minorTicks: 6,
+    minorTicks: 5,
+    majorTicks: ['1','1.5','2','2.5','3'],
     greenFrom: 1, greenTo: 1.5,
     yellowFrom: 1.5, yellowTo: 2,
     redFrom: 2, redTo: 6
@@ -22,7 +27,7 @@ function drawChart() {
     ['Inductance', 137]
   ]);
   var Loptions = {
-    width: 400, height: 120,
+    width: dialWidth, height: dialHeight,
     min: 137, max: 576,
     minorTicks: 5
   };
@@ -33,17 +38,30 @@ function drawChart() {
     ['Capacitance', 54],
   ]);
   var Coptions = {
-    width: 400, height: 120,
+    width: dialWidth, height: dialHeight,
     min: 54, max: 203,
     minorTicks: 5
   };
   var Cchart = new google.visualization.Gauge(document.getElementById('C'));
 
+  var Powerdata = google.visualization.arrayToDataTable([
+    ['Label', 'Value'],
+    ['Power', 0],
+  ]);
+  var Poweroptions = {
+    width: dialWidth, height: dialHeight,
+    min: 0, max: maxPower,
+    minorTicks: 3,
+    majorTicks: powerTicks,
+    yellowFrom: 1500, yellowTo: 1800
+  };
+  var Powerchart = new google.visualization.Gauge(document.getElementById('Power'));
+
   var websocket = new WebSocket(wsUri);
 
   setInterval(function() { websocket.send('ping'); }, 9000);
 
-  websocket.onload = function(evt) {
+  function updateDials(evt) {
     var j = JSON.parse(evt.data);
     SWRdata.setValue(0, 1, j['ATU_SWR']);
     SWRchart.draw(SWRdata,SWRoptions);
@@ -51,18 +69,17 @@ function drawChart() {
     Lchart.draw(Ldata,Loptions);
     Cdata.setValue(0, 1, j['ATU_CAP']);
     Cchart.draw(Cdata,Coptions);
+    Powerdata.setValue(0, 1, j['ATU_PWR']);
+    Powerchart.draw(Powerdata,Poweroptions);
   };
 
   websocket.onmessage = function(evt) {
     if (evt.data === 'keep-alive') { return; }
-
-    var j = JSON.parse(evt.data);
-    SWRdata.setValue(0, 1, j['ATU_SWR']);
-    SWRchart.draw(SWRdata,SWRoptions);
-    Ldata.setValue(0, 1, j['ATU_IND']);
-    Lchart.draw(Ldata,Loptions);
-    Cdata.setValue(0, 1, j['ATU_CAP']);
-    Cchart.draw(Cdata,Coptions);
+    updateDials(evt);
   };
+
+  websocket.onload = function(evt) {
+    updateDials(evt);
+  }
 }
 
