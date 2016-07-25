@@ -16,14 +16,14 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6">
-        <div class="well well-sm">
+        <div class="well well-sm clearfix">
           <div class="col-sm-4" id="SWR"></div>
           <div class="col-sm-4" id="L"></div>
           <div class="col-sm-4" id="C"></div>
         </div>
       </div>
       <div class="col-sm-6">
-        <div class="well well-sm">
+        <div class="well well-sm clearfix">
           <div class="col-sm-4" id="Power"></div>
           <div class="col-sm-4" id="PeakPower"></div>
           <div class="col-sm-4" id="PowerRange"></div>
