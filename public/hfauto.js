@@ -1,8 +1,11 @@
 google.charts.load('current', {'packages':['gauge']});
 google.charts.setOnLoadCallback(drawChart);
 
-var maxPower = 1800;
-var powerTicks = ['0','300','600','900','1200','1500','1800'];
+var highMaxPower = 1800;
+var highPowerTicks = ['0','300','600','900','1200','1500','1800'];
+var highYellowFrom = 1500;
+var lowMaxPower = 120;
+var lowPowerTicks = ['0','20','40','60','80','100','120'];
 var dialWidth = 400;
 var dialHeight = 120;
 
@@ -50,10 +53,10 @@ function drawChart() {
   ]);
   var Poweroptions = {
     width: dialWidth, height: dialHeight,
-    min: 0, max: maxPower,
+    min: 0, max: highMaxPower,
     minorTicks: 3,
-    majorTicks: powerTicks,
-    yellowFrom: 1500, yellowTo: 1800
+    majorTicks: highPowerTicks,
+    yellowFrom: highYellowFrom, yellowTo: highMaxPower
   };
   var Powerchart = new google.visualization.Gauge(document.getElementById('Power'));
 
@@ -63,19 +66,19 @@ function drawChart() {
   ]);
   var PeakPoweroptions = {
     width: dialWidth, height: dialHeight,
-    min: 0, max: maxPower,
+    min: 0, max: highMaxPower,
     minorTicks: 3,
-    majorTicks: powerTicks,
-    yellowFrom: 1500, yellowTo: 1800
+    majorTicks: highPowerTicks,
+    yellowFrom: highYellowFrom, yellowTo: highMaxPower
   };
   var PeakPowerchart = new google.visualization.Gauge(document.getElementById('PeakPower'));
 
   var websocket = new WebSocket(wsUri);
 
+  // keep websocket from timing out
   setInterval(function() { websocket.send('ping'); }, 9000);
 
-  function updateDials(evt) {
-    var j = JSON.parse(evt.data);
+  function updateDials(j) {
     SWRdata.setValue(0, 1, j['ATU_SWR']);
     SWRchart.draw(SWRdata,SWRoptions);
     Ldata.setValue(0, 1, j['ATU_IND']);
@@ -88,9 +91,19 @@ function drawChart() {
     PeakPowerchart.draw(PeakPowerdata,PeakPoweroptions);
   };
 
+  function updateText(j) {
+    $("#Antenna").html(j['ATU_ANT_NAME']);
+    $("#OutputJack").html(j['ATU_ANT_NR']);
+    $("#Frequency").html(j['ATU_FREQ']);
+    $("#OutputJackMode").html(j['ATU_ANT_SEL_METHOD']);
+    $("#TunerMode").html(j['ATU_OPER_MODE']);
+  }
+
   websocket.onmessage = function(evt) {
     if (evt.data === 'keep-alive') { return; }
-    updateDials(evt);
+    var j = JSON.parse(evt.data);
+    updateDials(j);
+    updateText(j);
   };
 
   websocket.onload = function(evt) {

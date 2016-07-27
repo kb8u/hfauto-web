@@ -30,6 +30,22 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="well well-sm clearfix">
+          <div class="col-sm-4" id="Antenna"></div>
+          <div class="col-sm-4" id="OutputJack"></div>
+          <div class="col-sm-4" id="Frequency"></div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="well well-sm clearfix">
+          <div class="col-sm-4" id="OutputJackMode"></div>
+          <div class="col-sm-4" id="TunerMode"></div>
+          <div class="col-sm-4" id="OnAir"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
