@@ -17,7 +17,7 @@ var SWRoptions = {
   majorTicks: ['1','1.5','2','2.5','3'],
   greenFrom: 1, greenTo: 1.5,
   yellowFrom: 1.5, yellowTo: 2,
-  redFrom: 2, redTo: 6
+  redFrom: 2, redTo: 3
 };
 
 var Loptions = {
