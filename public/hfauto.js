@@ -65,25 +65,25 @@ function drawChart() {
 
   var Ldata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
-    ['Inductance', 137]
+    ['L', 137]
   ]);
   var Lchart = new google.visualization.Gauge(document.getElementById('L'));
 
   var Cdata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
-    ['Capacitance', 54],
+    ['C', 54],
   ]);
   var Cchart = new google.visualization.Gauge(document.getElementById('C'));
 
   var Powerdata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
-    ['Power', 0],
+    ['W', 0],
   ]);
   var Powerchart = new google.visualization.Gauge(document.getElementById('Power'));
 
   var PeakPowerdata = google.visualization.arrayToDataTable([
     ['Label', 'Value'],
-    ['Power', 0],
+    ['W', 0],
   ]);
   var PeakPowerchart = new google.visualization.Gauge(document.getElementById('PeakPower'));
 
@@ -126,6 +126,22 @@ function drawChart() {
         Cchart.draw(Cdata,Coptions);
         Powerchart.draw(Powerdata,Poweroptions);
         PeakPowerchart.draw(PeakPowerdata,PeakPoweroptions);
+        // add label below dials
+        if ($('#SWR>table>tbody>tr:odd').length === 0) {
+          $('#SWR>table>tbody>tr').after('<tr><td class="dialText">X:1 ratio</td></tr>');
+        }
+        if ($('#L>table>tbody>tr:odd').length === 0) {
+          $('#L>table>tbody>tr').after('<tr><td class="dialText">Relative Inductance</td></tr>');
+        }
+        if ($('#C>table>tbody>tr:odd').length === 0) {
+          $('#C>table>tbody>tr').after('<tr><td class="dialText">Relative Capacitance</td></tr>');
+        }
+        if ($('#Power>table>tbody>tr:odd').length === 0) {
+          $('#Power>table>tbody>tr').after('<tr><td class="dialText">Average Power</td></tr>');
+        }
+        if ($('#PeakPower>table>tbody>tr:odd').length === 0) {
+          $('#PeakPower>table>tbody>tr').after('<tr><td class="dialText">Peak Power</td></tr>');
+        }
       }
       if(viewport.is('lg')) { changeto(200) }
       if(viewport.is('md')) { changeto(165) }
@@ -140,8 +156,14 @@ function drawChart() {
     updateText(j);
   };
 
-  websocket.onload = function(evt) {
+  websocket.onopen = function(evt) {
     updateDials(evt);
+    // add label below dials
+    $('#SWR>table>tbody>tr').after('<tr><td class="dialText">X:1 ratio</td></tr>');
+    $('#L>table>tbody>tr').after('<tr><td class="dialText">Relative Inductance</td></tr>');
+    $('#C>table>tbody>tr').after('<tr><td class="dialText">Relative Capacitance</td></tr>');
+    $('#Power>table>tbody>tr').after('<tr><td class="dialText">Average Power</td></tr>');
+    $('#PeakPower>table>tbody>tr').after('<tr><td class="dialText">Peak Power</td></tr>');
   };
 }
 }); })(jQuery, ResponsiveBootstrapToolkit);
