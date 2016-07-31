@@ -10,6 +10,7 @@
   <script src="bootstrap-toolkit.min.js"></script>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script>
+    // The URI to use for the websocket json feed.
     var wsUri = '<%= $wsUri %>';
   </script>
   <script src="hfauto.js"></script>
@@ -35,15 +36,30 @@
     <div class="row">
       <div class="col-sm-6">
         <div class="well well-sm clearfix">
-          <div class="col-sm-4" id="Antenna"></div>
-          <div class="col-sm-4" id="OutputJack"></div>
-          <div class="col-sm-4" id="Frequency"></div>
+          <div class="col-sm-4">
+            <p class="w1trText" id="Antenna"></p>
+            <p class="descrText">Antenna</p>
+          </div>
+          <div class="col-sm-4">
+            <p class="w1trText" id="OutputJack"></p>
+            <p class="descrText">Output Jack</p>
+          </div>
+          <div class="col-sm-4">
+            <p class="w1trText" id="Frequency"></p>
+            <p class="descrText">kHz</p>
+          </div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="well well-sm clearfix">
-          <div class="col-sm-4" id="OutputJackMode"></div>
-          <div class="col-sm-4" id="TunerMode"></div>
+          <div class="col-sm-4">
+            <p class="w1trText" id="OutputJackMode"></p>
+            <p class="descrText">Output Jack Mode</p>
+          </div>
+          <div class="col-sm-4">
+            <p class="w1trText" id="TunerMode"></p>
+            <p class="descrText">Tuner Mode</p>
+          </div>
           <div class="col-sm-4" id="OnAir"></div>
         </div>
       </div>

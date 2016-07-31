@@ -21,10 +21,20 @@ sub stream {
     bind => [$sa->config->{w1tr_ip}, $sa->config->{w1tr_port}],
     on_recv => sub {
         my ($datagram, $ae_handle, $sock_addr) = @_;
-        $sa->{'hfa_json'} = encode_json(XMLin(
-                  $datagram, KeyAttr => 'HFAUTO', ForceArray => 0));
 
-        # initialize last_hfa_json for new client
+        my $hfa = XMLin($datagram, KeyAttr => 'HFAUTO', ForceArray => 0);
+        # frequency has last 3 digits always zero so change it to khz
+        for (1..3) { chop $hfa->{'ATU_FREQ'} }
+        # modes are in all caps, change it to first letter cap only
+        $hfa->{'ATU_ANT_SEL_METHOD'} = lc $hfa->{'ATU_ANT_SEL_METHOD'};
+        $hfa->{'ATU_ANT_SEL_METHOD'} = ucfirst $hfa->{'ATU_ANT_SEL_METHOD'};
+        $hfa->{'ATU_OPER_MODE'} = lc $hfa->{'ATU_OPER_MODE'};
+        $hfa->{'ATU_OPER_MODE'} = ucfirst $hfa->{'ATU_OPER_MODE'};
+
+        $sa->{'hfa_json'} = encode_json($hfa);
+
+        # initialize last_hfa_json for new client to random junk so 
+        # Compare(decode_json(...)) doesn't complain about invalid json later
         unless (exists $sa->{'last_hfa_json'}->{$id}) {
           $sa->{'last_hfa_json'}->{$id} = encode_json({a => 0});
         }

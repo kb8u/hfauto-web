@@ -1,3 +1,13 @@
 .dialText {
   text-align: center;
+  font-weight: bold;
+}
+
+.descrText {
+  text-align: center;
+  font-weight: bold;
+}
+
+.w1trText {
+  text-align: center;
 }
