@@ -11,3 +11,8 @@
 .w1trText {
   text-align: center;
 }
+
+.alert-danger {
+  text-align: center;
+  font-weight: bold;
+}

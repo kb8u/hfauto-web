@@ -17,7 +17,7 @@
 </head>
 <body>
   <div class="container-fluid">
-    <div class="row">
+    <div class="row row-eq-height">
       <div class="col-sm-6">
         <div class="well well-sm clearfix">
           <div class="col-sm-4" id="SWR"></div>
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row row-eq-height">
       <div class="col-sm-6">
         <div class="well well-sm clearfix">
           <div class="col-sm-4">
@@ -60,7 +60,9 @@
             <p class="w1trText" id="TunerMode"></p>
             <p class="descrText">Tuner Mode</p>
           </div>
-          <div class="col-sm-4" id="OnAir"></div>
+          <div id="OnAir" class="col-sm-4 alert alert-danger">
+            ON AIR
+          </div>
         </div>
       </div>
     </div>

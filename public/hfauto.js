@@ -114,6 +114,12 @@ function drawChart() {
     $("#Frequency").html(j['ATU_FREQ']);
     $("#OutputJackMode").html(j['ATU_ANT_SEL_METHOD']);
     $("#TunerMode").html(j['ATU_OPER_MODE']);
+    if (j['ATU_PWR'] === "0") {
+      $("#OnAir").hide();
+    }
+    else {
+       $("#OnAir").show();
+    }
   }
 
   // Execute code each time window size changes
