@@ -29,7 +29,19 @@
         <div class="well well-sm clearfix">
           <div class="col-sm-4" id="Power"></div>
           <div class="col-sm-4" id="PeakPower"></div>
-          <div class="col-sm-4" id="PowerRange"></div>
+          <div class="col-sm-4" id="PowerRange">
+            <div class="radioGroup">
+              <div class="radio">
+                <label><input type="radio" name="powerRange" class="powerRadio">1800 W</label>
+              </div>
+              <div class="radio">
+                <label><input type="radio" name="powerRange" class="powerRadio">180 W</label>
+              </div>
+              <div class="radio">
+                <label><input type="radio" name="powerRange" class="powerRadio">18 W</label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
