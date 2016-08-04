@@ -6,9 +6,9 @@ var highMaxPower = 1800;
 var highPowerTicks = ['0','300','600','900','1200','1500','1800'];
 var highYellowFrom = 1500;
 var lowMaxPower = 120;
-var lowPowerTicks = ['0','20','40','60','80','100','120','180'];
+var lowPowerTicks = ['0','30','60','90','120','150','180'];
 var qrpMaxPower = 18;
-var qrpPowerTicks = ['0','2','4','6','8','10','12','18'];
+var qrpPowerTicks = ['0','3','6','9','12','15','18'];
 var defaultWidth = 200;
 var defaultHeight = 200;
 
@@ -98,35 +98,26 @@ function drawChart() {
     if (viewport.is('lg')) { resizeDials(200); }
     if (viewport.is('md')) { resizeDials(165); }
     if (viewport.is('<md')) { resizeDials(120); }
-    if ($('input:checked').attr('value') === 'H') {
-      Poweroptions['max'] = highMaxPower;
-      PeakPoweroptions['max'] = highMaxPower;
-      Poweroptions['majorTicks'] = highPowerTicks;
-      PeakPoweroptions['majorTicks'] = highPowerTicks;
-      Poweroptions['yellowFrom'] = highYellowFrom;
-      PeakPoweroptions['yellowFrom'] = highYellowFrom;
-      Poweroptions['yellowTo'] = highMaxPower;
-      PeakPoweroptions['yellowTo'] = highMaxPower;
-    }
-    else if ($('input:checked').attr('value') === 'L') {
-      Poweroptions['max'] = lowMaxPower;
-      PeakPoweroptions['max'] = lowMaxPower;
-      Poweroptions['majorTicks'] = lowPowerTicks;
-      PeakPoweroptions['majorTicks'] = lowPowerTicks;
-      Poweroptions['yellowFrom'] = null;
-      PeakPoweroptions['yellowFrom'] = null;
-      Poweroptions['yellowTo'] = null;
-      PeakPoweroptions['yellowTo'] = null;
-    }
-    else {
-      Poweroptions['max'] = qrpMaxPower;
-      PeakPoweroptions['max'] = qrpMaxPower;
-      Poweroptions['majorTicks'] = qrpPowerTicks;
-      PeakPoweroptions['majorTicks'] = qrpPowerTicks;
-      Poweroptions['yellowFrom'] = null;
-      PeakPoweroptions['yellowFrom'] = null;
-      Poweroptions['yellowTo'] = null;
-      PeakPoweroptions['yellowTo'] = null;
+// MOVE this switch to it's own function and call it onclick for radio buttons
+// add labelDials back to onopen
+    switch ($('input:checked').attr('value')) {
+      case 'H':
+        Poweroptions['max'] = PeakPoweroptions['max'] = highMaxPower;
+        Poweroptions['majorTicks'] = PeakPoweroptions['majorTicks'] = highPowerTicks;
+        Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = highYellowFrom;
+        Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = highMaxPower;
+        break;
+      case 'L':
+        Poweroptions['max'] = PeakPoweroptions['max'] = lowMaxPower;
+        Poweroptions['majorTicks'] = PeakPoweroptions['majorTicks'] = lowPowerTicks;
+        Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = null;
+        Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = null;
+        break;
+      case 'Q':
+        Poweroptions['max'] = PeakPoweroptions['max'] = qrpMaxPower;
+        Poweroptions['majorTicks'] = PeakPoweroptions['majorTicks'] = qrpPowerTicks;
+        Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = null;
+        Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = null;
     }
     SWRdata.setValue(0, 1, j['ATU_SWR']);
     SWRchart.draw(SWRdata,SWRoptions);
@@ -138,7 +129,8 @@ function drawChart() {
     Powerchart.draw(Powerdata,Poweroptions);
     PeakPowerdata.setValue(0, 1, j['ATU_PWR_PEAK']);
     PeakPowerchart.draw(PeakPowerdata,PeakPoweroptions);
-  };
+    labelPower();
+  }
 
   function updateText(j) {
     $("#Antenna").html(j['ATU_ANT_NAME']);
@@ -151,6 +143,15 @@ function drawChart() {
     }
     else {
        $("#OnAir").show();
+    }
+  }
+
+  function labelPower() {
+    if ($('#Power>table>tbody>tr:odd').length === 0) {
+      $('#Power>table>tbody>tr').after('<tr><td class="dialText">Average Power</td></tr>');
+    }
+    if ($('#PeakPower>table>tbody>tr:odd').length === 0) {
+      $('#PeakPower>table>tbody>tr').after('<tr><td class="dialText">Peak Power</td></tr>');
     }
   }
 
@@ -174,12 +175,7 @@ function drawChart() {
         if ($('#C>table>tbody>tr:odd').length === 0) {
           $('#C>table>tbody>tr').after('<tr><td class="dialText">Relative Capacitance</td></tr>');
         }
-        if ($('#Power>table>tbody>tr:odd').length === 0) {
-          $('#Power>table>tbody>tr').after('<tr><td class="dialText">Average Power</td></tr>');
-        }
-        if ($('#PeakPower>table>tbody>tr:odd').length === 0) {
-          $('#PeakPower>table>tbody>tr').after('<tr><td class="dialText">Peak Power</td></tr>');
-        }
+        labelPower();
       }
       if(viewport.is('lg')) { changeto(200) }
       if(viewport.is('md')) { changeto(165) }
@@ -196,12 +192,10 @@ function drawChart() {
 
   websocket.onopen = function(evt) {
     updateDials(evt);
-    // add label below dials
+    // add label below SWR, L and C dials. Power labels are added in updateDials
     $('#SWR>table>tbody>tr').after('<tr><td class="dialText">X:1 ratio</td></tr>');
     $('#L>table>tbody>tr').after('<tr><td class="dialText">Relative Inductance</td></tr>');
     $('#C>table>tbody>tr').after('<tr><td class="dialText">Relative Capacitance</td></tr>');
-    $('#Power>table>tbody>tr').after('<tr><td class="dialText">Average Power</td></tr>');
-    $('#PeakPower>table>tbody>tr').after('<tr><td class="dialText">Peak Power</td></tr>');
   };
 }
 }); })(jQuery, ResponsiveBootstrapToolkit);
