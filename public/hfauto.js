@@ -6,7 +6,9 @@ var highMaxPower = 1800;
 var highPowerTicks = ['0','300','600','900','1200','1500','1800'];
 var highYellowFrom = 1500;
 var lowMaxPower = 120;
-var lowPowerTicks = ['0','20','40','60','80','100','120'];
+var lowPowerTicks = ['0','20','40','60','80','100','120','180'];
+var qrpMaxPower = 18;
+var qrpPowerTicks = ['0','2','4','6','8','10','12','18'];
 var defaultWidth = 200;
 var defaultHeight = 200;
 
@@ -93,9 +95,39 @@ function drawChart() {
   setInterval(function() { websocket.send('ping'); }, 9000);
 
   function updateDials(j) {
-    if(viewport.is('lg')) { resizeDials(200); }
-    if(viewport.is('md')) { resizeDials(165); }
-    if(viewport.is('<md')) { resizeDials(120); }
+    if (viewport.is('lg')) { resizeDials(200); }
+    if (viewport.is('md')) { resizeDials(165); }
+    if (viewport.is('<md')) { resizeDials(120); }
+    if ($('input:checked').attr('value') === 'H') {
+      Poweroptions['max'] = highMaxPower;
+      PeakPoweroptions['max'] = highMaxPower;
+      Poweroptions['majorTicks'] = highPowerTicks;
+      PeakPoweroptions['majorTicks'] = highPowerTicks;
+      Poweroptions['yellowFrom'] = highYellowFrom;
+      PeakPoweroptions['yellowFrom'] = highYellowFrom;
+      Poweroptions['yellowTo'] = highMaxPower;
+      PeakPoweroptions['yellowTo'] = highMaxPower;
+    }
+    else if ($('input:checked').attr('value') === 'L') {
+      Poweroptions['max'] = lowMaxPower;
+      PeakPoweroptions['max'] = lowMaxPower;
+      Poweroptions['majorTicks'] = lowPowerTicks;
+      PeakPoweroptions['majorTicks'] = lowPowerTicks;
+      Poweroptions['yellowFrom'] = null;
+      PeakPoweroptions['yellowFrom'] = null;
+      Poweroptions['yellowTo'] = null;
+      PeakPoweroptions['yellowTo'] = null;
+    }
+    else {
+      Poweroptions['max'] = qrpMaxPower;
+      PeakPoweroptions['max'] = qrpMaxPower;
+      Poweroptions['majorTicks'] = qrpPowerTicks;
+      PeakPoweroptions['majorTicks'] = qrpPowerTicks;
+      Poweroptions['yellowFrom'] = null;
+      PeakPoweroptions['yellowFrom'] = null;
+      Poweroptions['yellowTo'] = null;
+      PeakPoweroptions['yellowTo'] = null;
+    }
     SWRdata.setValue(0, 1, j['ATU_SWR']);
     SWRchart.draw(SWRdata,SWRoptions);
     Ldata.setValue(0, 1, j['ATU_IND']);

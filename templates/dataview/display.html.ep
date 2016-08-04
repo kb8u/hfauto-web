@@ -32,13 +32,13 @@
           <div class="col-sm-4" id="PowerRange">
             <div class="radioGroup">
               <div class="radio">
-                <label><input type="radio" name="powerRange" class="powerRadio">1800 W</label>
+                <label><input type="radio" checked name="powerRange" value="H" class="powerRadio">1800 W</label>
               </div>
               <div class="radio">
-                <label><input type="radio" name="powerRange" class="powerRadio">180 W</label>
+                <label><input type="radio" name="powerRange" value="L" class="powerRadio">180 W</label>
               </div>
               <div class="radio">
-                <label><input type="radio" name="powerRange" class="powerRadio">18 W</label>
+                <label><input type="radio" name="powerRange" value="Q" class="powerRadio">18 W</label>
               </div>
             </div>
           </div>
