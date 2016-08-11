@@ -146,6 +146,33 @@ function drawChart() {
     }
   }
 
+  function changePower() {
+    switch ($('input:checked').attr('value')) {
+      case 'H':
+        Poweroptions['max'] = PeakPoweroptions['max'] = highMaxPower;
+        Poweroptions['majorTicks'] = PeakPoweroptions['majorTicks'] = highPowerTicks;
+        Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = highYellowFrom;
+        Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = highMaxPower;
+        break;
+      case 'L':
+        Poweroptions['max'] = PeakPoweroptions['max'] = lowMaxPower;
+        Poweroptions['majorTicks'] = PeakPoweroptions['majorTicks'] = lowPowerTicks;
+        Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = null;
+        Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = null;
+        break;
+      case 'Q':
+        Poweroptions['max'] = PeakPoweroptions['max'] = qrpMaxPower;
+        Poweroptions['majorTicks'] = PeakPoweroptions['majorTicks'] = qrpPowerTicks;
+        Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = null;
+        Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = null;
+    }
+    Powerdata.setValue(0, 1, j['ATU_PWR']);
+    Powerchart.draw(Powerdata,Poweroptions);
+    PeakPowerdata.setValue(0, 1, j['ATU_PWR_PEAK']);
+    PeakPowerchart.draw(PeakPowerdata,PeakPoweroptions);
+    labelPower();
+  }
+
   function labelPower() {
     if ($('#Power>table>tbody>tr:odd').length === 0) {
       $('#Power>table>tbody>tr').after('<tr><td class="dialText">Average Power</td></tr>');

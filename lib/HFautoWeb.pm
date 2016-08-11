@@ -29,8 +29,11 @@ sub startup {
   # graphical display of xml data from hfauto
   $r->get('hfauto')->to(controller =>'dataview', action =>'display');
 
-  # encode xmlinto json
+  # encode xml into json
   $r->websocket('json_stream')->to(controller =>'dataview', action =>'stream');
+
+  # force the websocket to send json immediately instead of waiting for new data
+  $r->get('force_json')->to(controller =>'dataview', action =>'force_json');
 }
 
 1;

@@ -65,8 +65,20 @@ sub prep_debug {
 sub display {
   my $self = shift;
 
-  $self->stash( wsUri => $self->app->config->{wsUri} );
+  $self->stash({wsUri => $self->app->config->{wsUri},
+                forceJsonUri => $self->app->config->{forceJsonUri}});
   $self->render();
+}
+
+
+# clear last_hfa_json so next data received from W1TR software is always sent
+sub force_json {
+  my $self = shift;
+
+  for my $id (keys %{$self->app->{'clients'}}) {
+    $self->app->{'last_hfa_json'}->{$id} = encode_json({a => 0});
+  }
+  $self->rendered;
 }
 
 1;
