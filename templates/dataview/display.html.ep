@@ -9,12 +9,6 @@
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="bootstrap-toolkit.min.js"></script>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
-  <script>
-    // The URI to use for the websocket json feed.
-    var wsUri = '<%= $wsUri %>';
-    // The URI to use to force json update so power change will work
-    var forceJsonUri = '<%= $forceJsonUri %>';
-  </script>
   <script src="hfauto.js"></script>
 </head>
 <body>
@@ -34,13 +28,13 @@
           <div class="col-sm-4" id="PowerRange">
             <div class="radioGroup">
               <div class="radio">
-                <label><input type="radio" checked name="powerRange" value="H" class="powerRadio" onclick="jQuery.get(forceJsonUri)">1800 W</label>
+                <label><input type="radio" checked name="powerRange" value="H" class="powerRadio">1800 W</label>
               </div>
               <div class="radio">
-                <label><input type="radio" name="powerRange" value="L" class="powerRadio" onclick="jQuery.get(forceJsonUri)">180 W</label>
+                <label><input type="radio" name="powerRange" value="L" class="powerRadio">180 W</label>
               </div>
               <div class="radio">
-                <label><input type="radio" name="powerRange" value="Q" class="powerRadio" onclick="jQuery.get(forceJsonUri)">18 W</label>
+                <label><input type="radio" name="powerRange" value="Q" class="powerRadio">18 W</label>
               </div>
             </div>
           </div>

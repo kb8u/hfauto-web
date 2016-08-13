@@ -1,6 +1,5 @@
 package HFautoWeb::Dataview;
 use Mojo::Base 'Mojolicious::Controller';
-use Mojolicious::Plugin::Util::RandomString;
 use AnyEvent;
 use AnyEvent::Socket;
 use AnyEvent::Handle::UDP;
@@ -25,6 +24,7 @@ sub stream {
         my $hfa = XMLin($datagram, KeyAttr => 'HFAUTO', ForceArray => 0);
         # frequency has last 3 digits always zero so change it to khz
         for (1..3) { chop $hfa->{'ATU_FREQ'} }
+        $hfa->{'ATU_FREQ'} = $hfa->{'ATU_FREQ'} ? $hfa->{'ATU_FREQ'} : 'No RF yet';
         # modes are in all caps, change it to first letter cap only
         $hfa->{'ATU_ANT_SEL_METHOD'} = lc $hfa->{'ATU_ANT_SEL_METHOD'};
         $hfa->{'ATU_ANT_SEL_METHOD'} = ucfirst $hfa->{'ATU_ANT_SEL_METHOD'};
@@ -57,6 +57,8 @@ sub stream {
 sub prep_debug {
   my $self = shift;
 
+  my $wsUri = $self->app->config->{wsUri} //
+              'http://10.34.34.34:3000/json_stream';
   $self->stash( wsUri => $self->app->config->{wsUri} );
   $self->render();
 }
@@ -65,20 +67,7 @@ sub prep_debug {
 sub display {
   my $self = shift;
 
-  $self->stash({wsUri => $self->app->config->{wsUri},
-                forceJsonUri => $self->app->config->{forceJsonUri}});
   $self->render();
-}
-
-
-# clear last_hfa_json so next data received from W1TR software is always sent
-sub force_json {
-  my $self = shift;
-
-  for my $id (keys %{$self->app->{'clients'}}) {
-    $self->app->{'last_hfa_json'}->{$id} = encode_json({a => 0});
-  }
-  $self->rendered;
 }
 
 1;

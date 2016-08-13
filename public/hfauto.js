@@ -89,6 +89,10 @@ function drawChart() {
   ]);
   var PeakPowerchart = new google.visualization.Gauge(document.getElementById('PeakPower'));
 
+  // derive the websocket URI from the main page
+  var wsUri = window.location.href;
+  wsUri = wsUri.replace('http','ws');
+  wsUri = wsUri.replace('hfauto','json_stream');
   var websocket = new WebSocket(wsUri);
 
   // keep websocket from timing out
@@ -166,9 +170,7 @@ function drawChart() {
         Poweroptions['yellowFrom'] = PeakPoweroptions['yellowFrom'] = null;
         Poweroptions['yellowTo'] = PeakPoweroptions['yellowTo'] = null;
     }
-    Powerdata.setValue(0, 1, j['ATU_PWR']);
     Powerchart.draw(Powerdata,Poweroptions);
-    PeakPowerdata.setValue(0, 1, j['ATU_PWR_PEAK']);
     PeakPowerchart.draw(PeakPowerdata,PeakPoweroptions);
     labelPower();
   }
@@ -181,6 +183,8 @@ function drawChart() {
       $('#PeakPower>table>tbody>tr').after('<tr><td class="dialText">Peak Power</td></tr>');
     }
   }
+
+  $("input").click(changePower);
 
   // Execute code each time window size changes
   $(window).resize(

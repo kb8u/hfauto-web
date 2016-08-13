@@ -2,7 +2,6 @@ package HFautoWeb;
 use EV;
 use AnyEvent;
 use Mojo::Base 'Mojolicious';
-use Mojolicious::Plugin::Util::RandomString;
 use Mojolicious::Plugin::Config;
 use Mojo::Log;
 use AnyEvent::Socket;
@@ -16,7 +15,6 @@ sub startup {
   my $self = shift;
 
   $self->secrets(['Hte83oKX93OR@#ozM#be3%08hcA-j232']);
-  $self->plugin('Util::RandomString');
   $self->plugin('Config');
 
   # Router
@@ -31,9 +29,6 @@ sub startup {
 
   # encode xml into json
   $r->websocket('json_stream')->to(controller =>'dataview', action =>'stream');
-
-  # force the websocket to send json immediately instead of waiting for new data
-  $r->get('force_json')->to(controller =>'dataview', action =>'force_json');
 }
 
 1;

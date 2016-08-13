@@ -3,7 +3,9 @@
   <title>WebSocket Test</title>
   <script language="javascript" type="text/javascript">
 
-  var wsUri = "<%= $wsUri %>";
+  var wsUri = window.location.href;
+  wsUri = wsUri.replace('http','ws');
+  wsUri = wsUri.replace('prep_debug','json_stream');
   var output;
   var websocket = new WebSocket(wsUri);
 
