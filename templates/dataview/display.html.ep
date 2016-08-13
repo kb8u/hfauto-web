@@ -14,14 +14,14 @@
 <body>
   <div class="container-fluid">
     <div class="row row-eq-height">
-      <div class="col-sm-6">
+      <div class="col-lg-6 col-md-12">
         <div class="well well-sm clearfix">
           <div class="col-sm-4" id="SWR"></div>
           <div class="col-sm-4" id="L"></div>
           <div class="col-sm-4" id="C"></div>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-lg-6 col-md-12">
         <div class="well well-sm clearfix">
           <div class="col-sm-4" id="Power"></div>
           <div class="col-sm-4" id="PeakPower"></div>
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="row row-eq-height">
-      <div class="col-sm-6">
+      <div class="col-lg-6 col-md-12">
         <div class="well well-sm clearfix">
           <div class="col-sm-4">
             <p class="w1trText" id="Antenna"></p>
@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-lg-6 col-md-12">
         <div class="well well-sm clearfix">
           <div class="col-sm-4">
             <p class="w1trText" id="OutputJackMode"></p>
