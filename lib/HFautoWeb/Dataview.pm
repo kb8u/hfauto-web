@@ -6,6 +6,8 @@ use AnyEvent::Handle::UDP;
 use JSON;
 use XML::Simple ':strict';
 use Data::Compare;
+use Net::Address::IP::Local;
+
 
 
 sub stream {
@@ -16,8 +18,13 @@ sub stream {
   $sa->{'clients'}->{$id} = $self->tx;
   $self->app->log->debug("New websocket client $id");
 
+  # guess IP and port if they're not in the conf file
+  my $udp_ip = $sa->config->{w1tr_ip} // 0;
+  $udp_ip = $udp_ip ? $udp_ip : Net::Address::IP::Local->public;
+  my $udp_port = $sa->config->{w1tr_port} // 15080;
+
   my $hfauto_rx = AnyEvent::Handle::UDP->new(
-    bind => [$sa->config->{w1tr_ip}, $sa->config->{w1tr_port}],
+    bind => [$udp_ip, $udp_port],
     on_recv => sub {
         my ($datagram, $ae_handle, $sock_addr) = @_;
 

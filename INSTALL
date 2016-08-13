@@ -1,0 +1,13 @@
+To install on ubuntu, run the following commands
+
+sudo apt-get install libmojolicious-perl libanyevent-handle-udp-perl
+sudo apt-get install libjson-perl libxml-simple-perl libdata-compare-perl
+sudo apt-get install libnet-address-ip-local-perl
+
+You'll need to have the W1TR application send status info to this program by
+editing the W1TR configuration file.  Go to Tools->Edit Config File and
+select HFAUTO_APP to edit.  In the [Network] section, add 127.0.0.1:15080
+to the UDP_Broadcast line, save and close the file and then restart the
+W1TR HF Auto Application.  If you need to use a different IP and port, also
+set in in the h_fauto_web.conf file of this application using your favorite
+editor.
