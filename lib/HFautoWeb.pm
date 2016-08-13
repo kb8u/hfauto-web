@@ -7,7 +7,7 @@ use Mojo::Log;
 use AnyEvent::Socket;
 use AnyEvent::Handle::UDP;
 use XML::Simple ':strict';
-use JSON::XS;
+use JSON;
 
 
 # This method will run once at server start

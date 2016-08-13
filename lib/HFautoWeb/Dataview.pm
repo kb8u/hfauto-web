@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use AnyEvent;
 use AnyEvent::Socket;
 use AnyEvent::Handle::UDP;
-use JSON::XS;
+use JSON;
 use XML::Simple ':strict';
 use Data::Compare;
 
