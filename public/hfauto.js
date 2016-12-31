@@ -5,7 +5,7 @@ google.charts.setOnLoadCallback(drawChart);
 var highMaxPower = 1800;
 var highPowerTicks = ['0','300','600','900','1200','1500','1800'];
 var highYellowFrom = 1500;
-var lowMaxPower = 120;
+var lowMaxPower = 180;
 var lowPowerTicks = ['0','30','60','90','120','150','180'];
 var qrpMaxPower = 18;
 var qrpPowerTicks = ['0','3','6','9','12','15','18'];
